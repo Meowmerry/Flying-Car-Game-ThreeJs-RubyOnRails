@@ -66,7 +66,7 @@ A dynamic 3D flying car game built with Three.js, featuring an interactive city 
 
 2. **Installation**
    ```bash
-   git clone https://github.com/yourusername/flying-car-game.git
+   git clone https://github.com/Meowmerry/Flying-Car-Game-ThreeJs-RubyOnRails
    cd flying-car-game
    bundle install
    ```
