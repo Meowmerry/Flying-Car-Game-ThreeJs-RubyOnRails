@@ -111,10 +111,3 @@ Demo: https://flying-car-game.vercel.app/
 
 Project Link: [https://github.com/yourusername/flying-car-game](https://github.com/yourusername/flying-car-game)
 
----
-To add your demo video:
-1. Record a gameplay video showcasing the features
-2. Upload to YouTube
-3. Replace `your-video-id` in the README with your YouTube video ID
-4. Add a thumbnail image named `video-thumbnail.jpg`
-5. Add a demo GIF named `demo.gif`
