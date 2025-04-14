@@ -1,3 +1,4 @@
+
 // Global variables for game state
 let isNight = false;
 let scene, ambientLight, directionalLight, moonLight, cityObjects;
@@ -200,7 +201,7 @@ window.addEventListener('load', function () {
         ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         scene.add(ambientLight);
 
-        directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
         directionalLight.position.set(50, 100, 50);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 4096;
@@ -382,45 +383,27 @@ window.addEventListener('load', function () {
         function createCar(color) {
             const carGroup = new THREE.Group();
 
-            // Main body with better aerodynamics
+            // Main body with enhanced visibility
             const bodyGeometry = new THREE.BoxGeometry(2, 0.5, 4);
             const bodyMaterial = new THREE.MeshPhongMaterial({
                 color: color,
-                shininess: 90,
-                specular: 0x666666
+                shininess: 100,
+                specular: 0xffffff,  // Brighter specular highlights
+                emissive: color,     // Add slight glow
+                emissiveIntensity: 0.2
             });
             const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
             body.castShadow = true;
             body.receiveShadow = true;
             carGroup.add(body);
 
-            // Streamlined cabin
-            const cabinGeometry = new THREE.BoxGeometry(1.2, 0.4, 1.5);
-            const cabinMaterial = new THREE.MeshPhongMaterial({
-                color: color,
-                shininess: 100,
-                opacity: 0.7,
-                transparent: true
-            });
-            const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
-            cabin.position.y = 0.45;
-            cabin.position.z = -0.5;
-            cabin.castShadow = true;
-            carGroup.add(cabin);
-
-            // Aerodynamic wings
-            const wingGeometry = new THREE.BoxGeometry(4, 0.1, 1);
-            const wing = new THREE.Mesh(wingGeometry, bodyMaterial);
-            wing.position.y = 0;
-            wing.castShadow = true;
-            carGroup.add(wing);
-
-            // Enhanced thrusters with glow effect
+            // Enhanced thrusters with stronger glow
             const thrusterGeometry = new THREE.CylinderGeometry(0.2, 0.3, 0.5, 8);
             const thrusterMaterial = new THREE.MeshPhongMaterial({
-                color: 0x333333,
-                emissive: 0x666666,
-                shininess: 80
+                color: 0xff3300,
+                emissive: 0xff3300,
+                emissiveIntensity: 1,
+                shininess: 100
             });
 
             const leftThruster = new THREE.Mesh(thrusterGeometry, thrusterMaterial);
@@ -433,21 +416,61 @@ window.addEventListener('load', function () {
             rightThruster.rotation.x = Math.PI / 2;
             carGroup.add(rightThruster);
 
-            // Add headlights
-            const headlightGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-            const headlightMaterial = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                emissive: 0xffffff,
-                emissiveIntensity: 0.5
-            });
+            // Enhanced particle effects
+            function createThrusterParticles() {
+                const particleGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+                const particleMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xff4400,
+                    emissive: 0xff4400,
+                    emissiveIntensity: 2,
+                    transparent: true,
+                    opacity: 0.9
+                });
 
-            const leftHeadlight = new THREE.Mesh(headlightGeometry, headlightMaterial);
-            leftHeadlight.position.set(-0.8, 0, -2);
-            carGroup.add(leftHeadlight);
+                // Create two particles, one for each thruster
+                [-1.5, 1.5].forEach(offsetX => {
+                    const particle = new THREE.Mesh(particleGeometry, particleMaterial);
 
-            const rightHeadlight = new THREE.Mesh(headlightGeometry, headlightMaterial);
-            rightHeadlight.position.set(0.8, 0, -2);
-            carGroup.add(rightHeadlight);
+                    // Position particle behind the car's thrusters
+                    const worldPosition = new THREE.Vector3();
+                    carGroup.getWorldPosition(worldPosition);
+
+                    particle.position.set(
+                        worldPosition.x + offsetX * Math.cos(carGroup.rotation.y),
+                        worldPosition.y,
+                        worldPosition.z + offsetX * Math.sin(carGroup.rotation.y)
+                    );
+
+                    scene.add(particle);
+
+                    // More dramatic particle animation
+                    let life = 1.0;
+                    let scale = 1.0;
+                    function animateParticle() {
+                        life -= 0.03;
+                        scale += 0.1;
+                        particle.material.opacity = life;
+                        particle.scale.set(scale, scale, scale);
+
+                        // Move particle backward relative to car's direction
+                        particle.position.x -= Math.sin(carGroup.rotation.y) * 0.1;
+                        particle.position.z += Math.cos(carGroup.rotation.y) * 0.1;
+                        particle.position.y += 0.05;
+
+                        if (life <= 0) {
+                            scene.remove(particle);
+                            particle.geometry.dispose();
+                            particle.material.dispose();
+                        } else {
+                            requestAnimationFrame(animateParticle);
+                        }
+                    }
+                    animateParticle();
+                });
+            }
+
+            // Store the particle creation function
+            carGroup.userData.createThrusterParticles = createThrusterParticles;
 
             return carGroup;
         }
@@ -921,10 +944,14 @@ window.addEventListener('load', function () {
                 currentSpeed = Math.min(maxSpeed, currentSpeed + currentAcceleration);
                 car.translateZ(direction * currentSpeed * speedMultiplier * 0.3);
 
-                // Create more intense thruster effects when boosting
+                // Create particles more frequently when moving
+                if (Math.random() > 0.3) { // Increased frequency
+                    car.userData.createThrusterParticles();
+                }
                 if (boostActive) {
-                    createThrusterParticles(car);
-                    createThrusterParticles(car);
+                    // Even more particles when boosting
+                    car.userData.createThrusterParticles();
+                    car.userData.createThrusterParticles();
                 }
             } else {
                 // Slower deceleration when no keys are pressed
@@ -946,7 +973,10 @@ window.addEventListener('load', function () {
             if (keys.w) {
                 verticalSpeed = Math.min(verticalSpeed + THRUST, 1.5);
                 car.position.y += verticalSpeed;
-                createThrusterParticles(car);
+                // Create particles when thrusting upward
+                if (Math.random() > 0.3) {
+                    car.userData.createThrusterParticles();
+                }
             } else if (keys.s && car.position.y > minAltitude + 0.5) {
                 verticalSpeed = Math.max(verticalSpeed - THRUST, -1.5);
                 car.position.y += verticalSpeed;
@@ -990,9 +1020,9 @@ window.addEventListener('load', function () {
                 // Add score bonus when boosting
                 score += currentSpeed * 0.02;
 
-                // Create boost particles
-                if (Math.random() > 0.5) {
-                    createThrusterParticles(car);
+                // Create particles more frequently when boosting
+                if (Math.random() > 0.3) {
+                    car.userData.createThrusterParticles();
                 }
             } else {
                 // Regenerate boost more slowly
@@ -1031,51 +1061,20 @@ window.addEventListener('load', function () {
         // Start the game
         animate();
 
-        // Enhanced thruster particles
-        function createThrusterParticles(car) {
-            const thrusterPositions = [
-                new THREE.Vector3(-1.5, 0, 1.5),
-                new THREE.Vector3(1.5, 0, 1.5)
-            ];
+        // Add a spotlight to follow the car
+        const spotlight = new THREE.SpotLight(0xffffff, 1);
+        spotlight.position.set(0, 20, 0);
+        spotlight.angle = Math.PI / 4;
+        spotlight.penumbra = 0.1;
+        spotlight.decay = 2;
+        spotlight.distance = 200;
+        spotlight.castShadow = true;
+        scene.add(spotlight);
 
-            thrusterPositions.forEach(offset => {
-                const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-                const particleMaterial = new THREE.MeshPhongMaterial({
-                    color: 0xff3300,
-                    emissive: 0xff3300,
-                    emissiveIntensity: 2,
-                    transparent: true,
-                    opacity: 0.8
-                });
-
-                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
-
-                // Position particle relative to car's position and rotation
-                const particlePosition = offset.clone();
-                particlePosition.applyQuaternion(car.quaternion);
-                particle.position.copy(car.position).add(particlePosition);
-
-                scene.add(particle);
-
-                // Animate particle with more dynamic effects
-                let life = 1.0;
-                const animate = () => {
-                    life -= 0.05;
-                    particle.material.opacity = life * 0.8;
-                    particle.scale.multiplyScalar(0.95);
-                    particle.position.y -= 0.1;
-
-                    if (life <= 0) {
-                        scene.remove(particle);
-                        particle.geometry.dispose();
-                        particle.material.dispose();
-                    } else {
-                        requestAnimationFrame(animate);
-                    }
-                };
-                animate();
-            });
-        }
+        // Update spotlight position in animate loop
+        spotlight.position.copy(cars[activeCar].position);
+        spotlight.position.y += 20;
+        spotlight.target = cars[activeCar];
 
     } catch (error) {
         console.error('Error initializing game:', error);
