@@ -1,0 +1,187 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+.game-ui-selector-car {
+    position: fixed;
+    padding: 10px;
+    border-radius: 15px;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.game-ui {
+    position: fixed;
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.game-ui:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+#carSelector {
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+}
+
+#timeToggle {
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#timeToggle:hover {
+    transform: scale(1.1);
+}
+
+.game-ui-time-toggle {
+    position: fixed;
+}
+
+.time-icon {
+    font-size: 32px;
+}
+
+.time-icon:hover {
+    font-size: 38px;
+}
+
+#controls {
+    bottom: 20px;
+    left: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+#stats {
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    text-align: center;
+    min-width: 200px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background: linear-gradient(to bottom, rgb(16, 16, 16), rgb(23, 23, 23));
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(to bottom, rgb(119, 130, 119), rgb(182, 194, 182));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.control-key {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin: 0 3px;
+    font-family: monospace;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#speedometer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #4CAF50;
+    font-family: 'Arial', sans-serif;
+}
+
+#speedValue {
+    font-size: 36px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+#speedUnit {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.boost-meter {
+    position: fixed;
+    bottom: 20px;
+    right: 190px;
+    width: 20px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.boost-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #4CAF50, #45a049);
+    border-radius: 10px;
+    transition: height 0.3s ease;
+}
+
+#carSelector button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 2px 8px;
+    width: 140px;
+}
+
+#carSelector button .car-icon {
+    font-size: 24px;
+}

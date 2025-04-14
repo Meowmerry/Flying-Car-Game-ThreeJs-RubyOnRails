@@ -1,0 +1,11 @@
+{
+    "name": "flying-car-game",
+    "version": "1.0.0",
+    "description": "A 3D flying car game built with Three.js",
+    "scripts": {
+        "start": "serve public"
+    },
+    "dependencies": {
+        "serve": "^14.0.0"
+    }
+}

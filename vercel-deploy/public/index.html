@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flying Car Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <!-- Your game UI goes here -->
+  <div id="carSelector" class="game-ui-selector-car">
+    <button onclick="selectCar(0)"><span class="car-icon">🏎️</span>Red Racer</button>
+    <button onclick="selectCar(1)"><span class="car-icon">🚙</span>Blue Cruiser</button>
+    <button onclick="selectCar(2)"><span class="car-icon">🚓</span>Green Patrol</button>
+  </div>
+  
+  <div id="timeToggle" class="game-ui-time-toggle" onclick="toggleDayNight()">
+    <span class="time-icon">☀️</span>
+  </div>
+  
+  <div id="stats" class="game-ui">
+    <div>SPEED: <span id="speed-value" class="stat-value">0</span> MPH</div>
+    <div>ALTITUDE: <span id="altitude-value" class="stat-value">0</span> FT</div>
+    <div>SCORE: <span id="score-value" class="stat-value">0</span></div>
+  </div>
+  
+  <div id="controls" class="game-ui">
+    Controls:<br>
+    <span class="control-key">↑</span> <span class="control-key">↓</span> Move Forward/Back<br>
+    <span class="control-key">←</span> <span class="control-key">→</span> Turn Left/Right<br>
+    <span class="control-key">W</span> <span class="control-key">S</span> Thrust Up/Down<br>
+    <span class="control-key">Q</span> <span class="control-key">E</span> Tilt Left/Right<br>
+    <span class="control-key">SHIFT</span> Speed Boost<br>
+    <span class="control-key">🖱️</span> Zoom Camera
+  </div>
+
+  <div id="speedometer">
+    <div id="speedValue">0</div>
+    <div id="speedUnit">MPH</div>
+  </div>
+  <div class="boost-meter">
+    <div class="boost-fill" style="height: 100%"></div>
+  </div>
+</body>
+</html>
